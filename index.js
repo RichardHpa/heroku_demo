@@ -25,7 +25,13 @@ const baseUrl = `https://www.pokedata.ovh/apiv2/division/masters+juniors+seniors
 app.get(`/tournaments/:tournamentId`, (req, res) => {
   const { tournamentId } = req.params;
   if (runningTournaments.includes(tournamentId)) {
-    res.send(`Tournament ${tournamentId} is running`);
+    fs.readFile(`${tournamentsFolder}/${tournamentId}.json`, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        return res.send({});
+      }
+      res.send(JSON.parse(data));
+    });
   } else {
     res.send({});
   }
