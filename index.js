@@ -1,5 +1,5 @@
 import express from 'express';
-const port = 5001;
+const port = process.env.port || 5001;
 
 const app = express();
 
