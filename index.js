@@ -1,6 +1,7 @@
 import fs from 'fs';
 import express from 'express';
 import path from 'path';
+import { format } from 'date-fns';
 
 const port = process.env.PORT || 5001;
 const __dirname = path.resolve();
@@ -40,28 +41,34 @@ app.get('/test', (_req, res) => {
   });
 });
 
-// const getTournamentDivisionData = async tournamentId => {
-//   const url = `${baseUrl}/${tournamentId}`;
-//   let options = {};
-//   options.redirect = 'follow';
-//   options.follow = 20;
-//   try {
-//     const response = await fetch(url, options);
-//     const data = await response.json();
-//     if (Object.keys(data).length === 0) {
-//       return;
-//     }
+const getTournamentDivisionData = async tournamentId => {
+  const url = `${baseUrl}/${tournamentId}`;
+  let options = {};
+  options.redirect = 'follow';
+  options.follow = 20;
 
-//     fs.writeFile(`${folderName}/${tournamentId}.json`, JSON.stringify(data), err => {
-//       if (err) {
-//         console.error(err);
-//         return;
-//       }
-//     });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (Object.keys(data).length === 0) {
+      return;
+    }
+    const date = format(new Date(), 'Pp');
+    const newData = {
+      dataLastUpdated: date,
+      ...data,
+    };
+
+    fs.writeFile(`${tournamentsFolder}/${tournamentId}.json`, JSON.stringify(newData), err => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const createTestFile = () => {
   const data = {
@@ -79,5 +86,6 @@ const createTestFile = () => {
 app.listen(port, () => {
   createFolder();
   createTestFile();
+  getTournamentDivisionData('0000128');
   console.log(`Server is running on port ${port}`);
 });
