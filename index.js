@@ -10,7 +10,7 @@ const app = express();
 const baseFolder = `${__dirname}/data`;
 const tournamentsFolder = `${baseFolder}/tournaments`;
 
-const runningTournaments = ['0000128'];
+const runningTournaments = ['0000129'];
 
 const createFolder = async () => {
   if (!fs.existsSync(tournamentsFolder)) {
@@ -38,6 +38,16 @@ app.get(`/tournaments/:tournamentId`, (req, res) => {
   }
 });
 
+app.get('/tournaments', (_req, res) => {
+  fs.readFile(`${baseFolder}/tournaments.json`, 'utf8', (err, data) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    res.send(JSON.parse(data));
+  });
+});
+
 app.get('/test', (_req, res) => {
   fs.readFile(`${baseFolder}/test.json`, 'utf8', (err, data) => {
     if (err) {
@@ -47,6 +57,62 @@ app.get('/test', (_req, res) => {
     res.send(JSON.parse(data));
   });
 });
+
+const schedule = cron.schedule(
+  '*/15 * * * *',
+  async () => {
+    console.log(`Running task every 15 minutes, ran at ${format(new Date(), 'Pp')}`);
+    await getTournamentDivisionData(runningTournaments[0]);
+  },
+  {
+    scheduled: false,
+  }
+);
+
+const tournamentsSchedule = cron.schedule(
+  // '0 * * * *',
+  '*/30 * * * *',
+  async () => {
+    console.log(`Running task every hour, ran at ${format(new Date(), 'Pp')}`);
+    await getTournamentsData();
+  },
+  {
+    scheduled: false,
+  }
+);
+
+const tournamentsUrl = 'https://www.pokedata.ovh/apiv2/tcg/tournaments';
+const getTournamentsData = async () => {
+  const url = tournamentsUrl;
+  let options = {};
+  options.redirect = 'follow';
+  options.follow = 20;
+
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    if (Object.keys(data).length === 0) {
+      console.log('No data found');
+      return;
+    }
+    const date = format(new Date(), 'Pp');
+    const newData = {
+      dataLastUpdated: date,
+      ...data,
+    };
+
+    fs.writeFile(`${baseFolder}/tournaments.json`, JSON.stringify(newData, null, 4), err => {
+      console.log(`Tournaments Data updated at ${date} and file saved`);
+
+      if (err) {
+        console.error(err);
+        return;
+      }
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 const getTournamentDivisionData = async tournamentId => {
   const url = `${baseUrl}/${tournamentId}`;
@@ -71,7 +137,11 @@ const getTournamentDivisionData = async tournamentId => {
       `${tournamentsFolder}/${tournamentId}.json`,
       JSON.stringify(newData, null, 4),
       err => {
-        console.log(`Data updated at ${date} and file saved`);
+        console.log(`Data for ${tournamentId} updated at ${date} and file saved`);
+        if (data.tournament.tournamentStatus === 'finished') {
+          schedule.stop();
+          console.log(`Tournament ${tournamentId} has finished, stopping schedule`);
+        }
         if (err) {
           console.error(err);
           return;
@@ -100,24 +170,15 @@ const initialSetup = async () => {
   console.log('Initial Setup');
   await createFolder();
   await createTestFile();
-  await getTournamentDivisionData('0000128');
+  await getTournamentsData();
+  await getTournamentDivisionData(runningTournaments[0]);
 };
-
-const schedule = cron.schedule(
-  '*/15 * * * *',
-  async () => {
-    console.log(`Running task every 15 minutes, ran at ${format(new Date(), 'Pp')}`);
-    await getTournamentDivisionData('0000128');
-  },
-  {
-    scheduled: false,
-  }
-);
 
 initialSetup().then(() => {
   app.listen(port, () => {
     console.log(`Server started at ${format(new Date(), 'Pp')}`);
     console.log(`Listening on PORT: ${port}`);
     schedule.start();
+    tournamentsSchedule.start();
   });
 });
