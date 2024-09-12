@@ -58,6 +58,10 @@ app.get('/test', (_req, res) => {
   });
 });
 
+app.get('/loaderio-1a60ca1b960f219ccae80375388be890.txt', (_req, res) => {
+  res.send('loaderio-1a60ca1b960f219ccae80375388be890');
+});
+
 const schedule = cron.schedule(
   '*/15 * * * *',
   async () => {
