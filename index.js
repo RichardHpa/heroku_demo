@@ -27,7 +27,8 @@ app.get('/', (_req, res) => {
 const baseUrl = `https://www.pokedata.ovh/apiv2/division/masters+juniors+seniors/tcg/id`;
 app.get(`/tournaments/:tournamentId`, (req, res) => {
   const { tournamentId } = req.params;
-  if (runningTournaments.includes(tournamentId)) {
+  console.log(`Request for tournament ${tournamentId}`);
+  if (runningTournaments.includes(tournamentId) || tournamentId === '0000128') {
     fs.readFile(`${tournamentsFolder}/${tournamentId}.json`, 'utf8', (err, data) => {
       if (err) {
         console.error(err);
