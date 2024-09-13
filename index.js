@@ -74,8 +74,7 @@ const schedule = cron.schedule(
 );
 
 const tournamentsSchedule = cron.schedule(
-  // '0 * * * *',
-  '*/30 * * * *',
+  '0 * * * *',
   async () => {
     console.log(`Running task every hour, ran at ${format(new Date(), 'Pp')}`);
     await getTournamentsData();
