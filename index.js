@@ -177,6 +177,7 @@ const initialSetup = async () => {
   await createFolder();
   await createTestFile();
   await getTournamentsData();
+  await getTournamentDivisionData('0000128');
   await getTournamentDivisionData(runningTournaments[0]);
 };
 
