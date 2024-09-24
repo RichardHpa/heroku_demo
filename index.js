@@ -12,11 +12,15 @@ app.use(cors());
 const baseFolder = `${__dirname}/data`;
 const tournamentsFolder = `${baseFolder}/tournaments`;
 
-const runningTournaments = ['0000129'];
+const runningTournaments = [
+  // '0000129'
+];
 
 const createFolder = async () => {
   if (!fs.existsSync(tournamentsFolder)) {
     fs.mkdirSync(tournamentsFolder, { recursive: true });
+  } else {
+    console.log('Tournaments folder already exists');
   }
 };
 
@@ -159,33 +163,19 @@ const getTournamentDivisionData = async tournamentId => {
   }
 };
 
-const createTestFile = async () => {
-  const data = {
-    test: 'test',
-  };
-
-  fs.writeFile(`${baseFolder}/test.json`, JSON.stringify(data), err => {
-    if (err) {
-      console.error(err);
-      return;
-    }
-  });
-};
-
 const initialSetup = async () => {
   console.log('Initial Setup');
   await createFolder();
-  await createTestFile();
   await getTournamentsData();
-  await getTournamentDivisionData('0000128');
-  await getTournamentDivisionData(runningTournaments[0]);
+  // await getTournamentDivisionData('0000128');
+  // await getTournamentDivisionData(runningTournaments[0]);
 };
 
 initialSetup().then(() => {
   app.listen(port, () => {
     console.log(`Server started at ${format(new Date(), 'Pp')}`);
     console.log(`Listening on PORT: ${port}`);
-    schedule.start();
+    // schedule.start();
     tournamentsSchedule.start();
   });
 });
