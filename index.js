@@ -45,12 +45,25 @@ const singleTournamentSchedule = cron.schedule(
     console.log('current tracked tournaments:', trackedTournamentIds);
     console.log('-------------------');
 
+    let updateTournaments = false;
     for (const tournament of tournamentsToTrack) {
       const updatedData = await getTournamentData(tournament.id);
       if (updatedData.tournamentStatus === 'finished') {
         console.log(`Tournament ${tournament.id} has ended, removing from tracking`);
+        updateTournaments = true;
         tournamentsToTrack = tournamentsToTrack.filter(t => t.id !== tournament.id);
       }
+    }
+
+    if (updateTournaments === true) {
+      console.log('A tournament has ended, updating tournaments data to keep it in sync');
+      await getTournamentsData();
+    }
+
+    if (tournamentsToTrack.length === 0) {
+      console.log('No more tournaments to track, stopping single tournament scheduler');
+      singleTournamentSchedulerRunning = false;
+      singleTournamentSchedule.stop();
     }
   },
   {
