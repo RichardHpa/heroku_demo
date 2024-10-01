@@ -19,6 +19,8 @@
     "dev:frontend": "Runs the client in development mode. This doesn't run the server, it only runs the client",
     "dev:frontend:build": "Builds the client in development mode. This doesn't run the server, it only builds the client",
     "dev": "Runs the client and server concurrently. This is mainly for development purposes",
+    "build": "Builds the client. This is mainly for production purposes, this is needed so heroku can build the client",
+    "install-client": "Installs the client dependencies. This is mainly for Heroku to install the client dependencies after the server has been built",
     "heroku-postbuild": "This script is used by Heroku to build the client after the server has been built"
   },
   "keywords": [],
