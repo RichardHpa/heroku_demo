@@ -11,7 +11,7 @@
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"blue,red\" -p \"[{name}]\" \"npm run dev:frontend:build\" \"npm run dev:server\"",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm build"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build"
   },
   "scriptsComments": {
     "start": "Runs the server with the schedulers, Client must be built first. This is also the main script that will be used in production",
