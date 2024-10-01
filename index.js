@@ -1,8 +1,11 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { format } from 'date-fns';
 import cron from 'node-cron';
 import cors from 'cors';
 import cronstrue from 'cronstrue';
+import 'dotenv/config';
 
 import { createFolder } from './functions/createFolder.js';
 import { getTournamentsData } from './functions/getTournamentsData.js';
@@ -11,6 +14,9 @@ import { checkRunningTournaments } from './functions/checkRunningTournaments.js'
 
 import tournamentsRoutes from './routes/api/tournaments.js';
 
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
 const port = process.env.PORT || 5001;
 const app = express();
 app.use(express.json());
@@ -18,10 +24,6 @@ app.use(cors());
 
 let tournamentsToTrack = [];
 let singleTournamentSchedulerRunning = false;
-
-app.get('/', (_req, res) => {
-  res.send('PTCG Standings API');
-});
 
 // need this for load testing
 app.get('/loaderio-1a60ca1b960f219ccae80375388be890.txt', (_req, res) => {
@@ -135,18 +137,30 @@ const initialSetup = async () => {
     await getTournamentData(tournament.id);
   }
 
-  tournamentsSchedule.start();
+  if (process.argv.includes('--scheduler')) {
+    tournamentsSchedule.start();
 
-  if (tournamentsToTrack.length > 0) {
-    console.log('Running tournaments found, starting single tournament scheduler');
-    singleTournamentSchedulerRunning = true;
-    singleTournamentSchedule.start();
+    if (tournamentsToTrack.length > 0) {
+      console.log('Running tournaments found, starting single tournament scheduler');
+      singleTournamentSchedulerRunning = true;
+      singleTournamentSchedule.start();
+    }
   }
 };
+
+app.use(express.static(path.join(__dirname, './client/dist')));
+
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'client/dist/index.html'));
+});
 
 initialSetup().then(() => {
   app.listen(port, () => {
     console.log(`Server started at ${format(new Date(), 'Pp')}`);
     console.log(`Listening on PORT: ${port}`);
+
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`Open http://localhost:${port} to see the app`);
+    }
   });
 });
