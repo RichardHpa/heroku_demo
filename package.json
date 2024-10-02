@@ -11,7 +11,8 @@
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"blue,red\" -p \"[{name}]\" \"npm run dev:frontend:build\" \"npm run dev:server\"",
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build",
+    "test": "vitest --config ./vitest.config.js"
   },
   "scriptsComments": {
     "start": "Runs the server with the schedulers, Client must be built first. This is also the main script that will be used in production",
@@ -41,6 +42,7 @@
     "eslint": "^9.11.1",
     "eslint-plugin-n": "^17.10.3",
     "globals": "^15.9.0",
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "vitest": "^2.1.1"
   }
 }
