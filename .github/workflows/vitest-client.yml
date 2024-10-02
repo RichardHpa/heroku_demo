@@ -1,11 +1,14 @@
-name: ⚡ Vitest Server
+name: ⚡ Vitest Client
 
 on: push
 
 jobs:
   vitest:
-    name: ⚡ Vitest Server
+    name: ⚡ Vitest Client
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./client
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -23,5 +26,5 @@ jobs:
         with:
           useLockFile: false
 
-      - name: ⚡ Run vitest for server
+      - name: ⚡ Run vitest for client
         run: npm run test
