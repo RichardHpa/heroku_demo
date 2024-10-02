@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./client
+        working-directory: client
     steps:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
@@ -25,6 +25,7 @@ jobs:
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
+          working-directory: client
 
       - name: ⚡ Run vitest for client
         run: npm run test
