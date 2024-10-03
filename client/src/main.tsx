@@ -1,67 +1,74 @@
-import { StrictMode } from 'react';
+import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App.tsx';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { FallbackLoader } from 'components/FallbackLoader';
+
+import { RootLayout } from 'layouts/RootLayout';
+
+import { FallbackRender } from 'errors/FallbackRender';
+import { NotFound } from 'errors/NotFound';
+
+import { Home } from 'pages/Home';
 import {
-  createBrowserRouter,
-  RouterProvider,
-  // ScrollRestoration,
-  useRouteError,
-  isRouteErrorResponse,
-} from 'react-router-dom';
+  Tournament,
+  tournamentLoader,
+  TournamentOutlet,
+} from 'pages/Tournament';
 
 import './index.css';
 
-function FallbackRender() {
-  const error = useRouteError();
-  let errorMessage: string;
-
-  if (isRouteErrorResponse(error)) {
-    // error is type `ErrorResponse`
-    errorMessage = error.data.message || error.statusText;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  } else if (typeof error === 'string') {
-    errorMessage = error;
-  } else {
-    console.error(error);
-    errorMessage = 'Unknown error';
-  }
-
-  return (
-    <div
-      id="error-page"
-      className="flex h-screen flex-col items-center justify-center gap-8"
-    >
-      <h1 className="text-4xl font-bold">Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-      <p className="text-red-400">
-        <i>{errorMessage}</i>
-      </p>
-    </div>
-  );
-}
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 10, // 10 minutes
+    },
+  },
+});
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <RootLayout />,
     errorElement: <FallbackRender />,
+    children: [
+      { index: true, element: <Home /> },
+      {
+        path: 'tournaments/:tournamentId',
+        loader: tournamentLoader,
+        element: <TournamentOutlet />,
+        children: [{ index: true, element: <Tournament /> }],
+      },
+    ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 
-const Fallback = () => (
-  <div>
-    <h1>Loading...</h1>
-  </div>
+// eslint-disable-next-line react-refresh/only-export-components -- ignore this one as it doesn't need to be refreshed
+const ReactQueryDevtoolsProduction = lazy(() =>
+  import('@tanstack/react-query-devtools/build/modern/production.js').then(
+    d => ({
+      default: d.ReactQueryDevtools,
+    }),
+  ),
 );
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    {/* <ErrorBoundary fallbackRender={fallbackRender}> */}
-    {/* <BrowserRouter>
-      <App />
-    </BrowserRouter> */}
-    <RouterProvider router={router} fallbackElement={<Fallback />} />
-    {/* </ErrorBoundary> */}
+    <div className="flex min-h-screen flex-col bg-white text-black dark:bg-gray-900 dark:text-gray-200">
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} fallbackElement={<FallbackLoader />} />
+
+        {import.meta.env.MODE === 'development' && (
+          <Suspense fallback={null}>
+            <ReactQueryDevtoolsProduction />
+          </Suspense>
+        )}
+      </QueryClientProvider>
+    </div>
   </StrictMode>,
 );

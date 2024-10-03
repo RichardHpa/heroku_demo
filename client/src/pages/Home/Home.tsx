@@ -1,0 +1,32 @@
+import { Link } from 'react-router-dom';
+
+import { useGetTournaments } from 'queries/useGetTournaments';
+
+export const Home = () => {
+  const { data, isLoading, isError } = useGetTournaments();
+
+  if (isLoading || !data) {
+    return <div>Loading...</div>;
+  }
+
+  // Test this to see if it hits the error boundary
+  if (isError) {
+    return <div>Error...</div>;
+  }
+
+  return (
+    <div>
+      <div className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
+        {data.reverse().map(tournament => (
+          <Link
+            key={tournament.id}
+            to={`/tournaments/${tournament.id}`}
+            className="block w-full cursor-pointer border-b border-gray-200 px-4 py-4 hover:bg-gray-100 hover:text-blue-700 focus:text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:text-white dark:focus:ring-gray-500"
+          >
+            {tournament.name}
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
