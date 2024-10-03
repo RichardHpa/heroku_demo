@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 
 import { useGetTournaments } from 'queries/useGetTournaments';
 
+import { Heading } from 'components/Heading';
+
 export const Home = () => {
   const { data, isLoading, isError } = useGetTournaments();
 
@@ -16,8 +18,9 @@ export const Home = () => {
 
   return (
     <div>
+      <Heading level="6">All tournaments</Heading>
       <div className="rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white">
-        {data.reverse().map(tournament => (
+        {data.map(tournament => (
           <Link
             key={tournament.id}
             to={`/tournaments/${tournament.id}`}
