@@ -10,7 +10,7 @@
     "preview": "vite preview",
     "build:dev": "tsc -b && vite build --mode development --watch",
     "test": "vitest --config ./vite.config.ts",
-    "typeCheck": "npx tsc --noEmit"
+    "typeCheck": "tsc"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.59.0",

@@ -5,6 +5,11 @@ import { useGetTournaments } from 'queries/useGetTournaments';
 import { Heading } from 'components/Heading';
 
 export const Home = () => {
+  // write a block of code that should fail type checking to test npx tsc --noEmit
+  const test = 'test';
+  test = 1;
+  console.log(test);
+
   const { data, isLoading, isError } = useGetTournaments();
 
   if (isLoading || !data) {
