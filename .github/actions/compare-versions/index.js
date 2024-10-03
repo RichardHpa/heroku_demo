@@ -14,7 +14,7 @@ async function run() {
 
     const { data: releases } = await octokit.rest.repos.listReleases({
       owner: 'RichardHpa',
-      repo: 'heroku_demo',
+      repo: core.getInput('repoName'),
       per_page: 1,
     });
 

@@ -5,6 +5,9 @@ inputs:
   currentVersion:
     description: 'Version of the current package.json file'
     required: true
+  repoName:
+    description: 'Name of the repository'
+    required: true
 outputs:
   isNewerVersion:
     description: 'Is the latest version newer than the current version'
