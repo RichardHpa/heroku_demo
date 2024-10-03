@@ -73,7 +73,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: ⎔ Setup node
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
@@ -100,3 +100,45 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           currentVersion: ${{ env.PACKAGE_VERSION }}
+
+  deploy:
+    name: 'Deploy to Heroku'
+    runs-on: ubuntu-latest
+    needs: prepare
+    if: needs.prepare.outputs.isNewerVersion == 'true'
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Create a tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ needs.prepare.outputs.tag }}',
+              sha: context.sha
+            })
+
+      - name: Create a Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          tag_name: ${{ needs.prepare.outputs.tag }}
+          release_name: ${{ needs.prepare.outputs.tag }}
+          draft: false
+          prerelease: false
+          body: |
+            Automated via `./github/workflows/build-deploy.yml`
+
+            - Author: **@${{ github.actor }}**
+            - Version: `${{ env.PACKAGE_VERSION }}`
+            - Release Type: `${{ needs.prepare.outputs.versionType }}`
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
