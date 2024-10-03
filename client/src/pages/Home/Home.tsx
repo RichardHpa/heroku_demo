@@ -18,7 +18,7 @@ export const Home = () => {
 
   // Test this to see if it hits the error boundary
   if (isError) {
-    return <div>There was an error getting the data 6</div>;
+    return <div>There was an error getting the data 7</div>;
   }
 
   return (
