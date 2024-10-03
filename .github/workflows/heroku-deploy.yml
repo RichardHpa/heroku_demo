@@ -73,6 +73,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
       - name: 'Get current Package Version'
         id: PACKAGE_VERSION
         uses: martinbeentjes/npm-get-version-action@v1.2.3
