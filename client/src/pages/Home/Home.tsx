@@ -8,7 +8,7 @@ export const Home = () => {
   const { data, isLoading, isError } = useGetTournaments();
 
   if (isLoading || !data) {
-    return <div>Loading...</div>;
+    return <div>Loading data...</div>;
   }
 
   // Test this to see if it hits the error boundary
