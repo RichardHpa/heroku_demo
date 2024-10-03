@@ -1,6 +1,9 @@
 name: ⚡ Vitest Client
 
-on: push
+on:
+  push:
+    branches:
+      - '!main' # excludes main branch as it does its own check. Ideally should use this one but github actions don't support cross workflow checks yet
 
 jobs:
   vitest:
