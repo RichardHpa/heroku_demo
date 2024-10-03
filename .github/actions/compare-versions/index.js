@@ -18,6 +18,13 @@ async function run() {
       per_page: 1,
     });
 
+    // this means it could be the first release
+    if (releases.length === 0) {
+      core.setOutput('isNewerVersion', true);
+      core.setOutput('versionType', 'major');
+      return;
+    }
+
     const latestVersion = semver.parse(releases[0].tag_name);
     if (!latestVersion?.version) {
       throw new Error(`Could not parse a version from octokit api.`);
