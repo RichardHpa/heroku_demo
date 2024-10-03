@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directories:
+      - '/'
+      - '/client'
+    schedule:
+      interval: 'weekly'
+      timezone: Pacific/Auckland
+    labels:
+      - dependencies
+      - bot-pr
