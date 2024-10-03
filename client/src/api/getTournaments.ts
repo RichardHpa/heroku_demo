@@ -4,7 +4,7 @@ import type { TournamentsApiResponse } from 'types/tournament';
 
 export const getTournaments = async (): Promise<TournamentsApiResponse> => {
   try {
-    const response = await axios.get('/tournaments');
+    const response = await axios.get('/api/tournaments');
 
     const tournaments = response.data.tcg.data;
     const reversedTournaments = tournaments.reverse();

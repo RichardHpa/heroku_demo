@@ -6,7 +6,7 @@ export const getTournament = async (
   id: string,
 ): Promise<TournamentApiResponse> => {
   try {
-    const response = await axios.get(`/tournaments/${id}`);
+    const response = await axios.get(`/api/tournaments/${id}`);
     return response.data;
   } catch (error) {
     console.error(error);
