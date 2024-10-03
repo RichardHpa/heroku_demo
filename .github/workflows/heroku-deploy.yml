@@ -3,6 +3,7 @@ name: 🚀 Build & deploy
 on:
   push:
     branches:
+      - '**' # matches every branch
       - '!main' # excludes main branch as it does its own check. Ideally should use this one but github actions don't support cross workflow checks yet
 
 # The server and client jobs are pretty much the same as their individual workflows. Hopefully github will support cross workflow checks so we can just have them
