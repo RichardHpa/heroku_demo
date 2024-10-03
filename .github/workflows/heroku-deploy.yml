@@ -70,6 +70,9 @@ jobs:
       - name: 🛑 Cancel Previous Runs
         uses: styfle/cancel-workflow-action@0.11.0
 
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: 'Get current Package Version'
         id: PACKAGE_VERSION
         uses: martinbeentjes/npm-get-version-action@v1.2.3
