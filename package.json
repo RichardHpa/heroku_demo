@@ -12,7 +12,8 @@
     "build": "cd client && npm run build",
     "install-client": "cd client && npm install",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm run install-client && npm run build",
-    "test": "vitest --config ./vitest.config.js"
+    "test": "vitest --config ./vitest.config.js",
+    "prepare": "husky"
   },
   "scriptsComments": {
     "start": "Runs the server with the schedulers, Client must be built first. This is also the main script that will be used in production",
@@ -44,6 +45,7 @@
     "eslint": "^9.11.1",
     "eslint-plugin-n": "^17.10.3",
     "globals": "^15.9.0",
+    "husky": "^9.1.6",
     "nodemon": "^3.1.4",
     "semver": "^7.6.3",
     "vitest": "^2.1.1"
