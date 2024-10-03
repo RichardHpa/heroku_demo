@@ -6,8 +6,7 @@ env:
 on:
   push:
     branches:
-      - '**' # matches every branch
-      - '!main' # excludes main branch as it does its own check. Ideally should use this one but github actions don't support cross workflow checks yet
+      - main
 
 # The server and client jobs are pretty much the same as their individual workflows. Hopefully github will support cross workflow checks so we can just have them
 jobs:
@@ -100,10 +99,6 @@ jobs:
         run: |
           echo "::set-output name=tag::v${{ steps.package-version.outputs.current-version }}"
 
-      - name: Use the custom ENV variable
-        run: |
-          echo $REPO_NAME
-
       - name: Compare the two versions
         uses: ./.github/actions/compare-versions
         id: compare
@@ -154,3 +149,10 @@ jobs:
             - Release Type: `${{ needs.prepare.outputs.versionType }}`
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@v3.12.12 # This action deploys the content on Heroku
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}} #The Heroku api key we stored on our repo secret
+          heroku_app_name: 'ptcgstandingsapi' #The name of your heroku app - Must be unique in Heroku
+          heroku_email: 'richard.m.hpa@gmail.com' #Your heroku user name
