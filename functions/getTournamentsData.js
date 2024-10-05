@@ -19,6 +19,13 @@ export const getTournamentsData = async () => {
       return;
     }
     const date = format(new Date(), 'Pp');
+
+    // hack for 0000132 as its not auto updating to running
+    const tournament = data.tcg.data.find(tournament => tournament.id === '0000132');
+    if (tournament) {
+      tournament.tournamentStatus = 'running';
+    }
+
     const newData = {
       dataLastUpdated: date,
       ...data,
