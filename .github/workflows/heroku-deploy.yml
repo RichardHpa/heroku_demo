@@ -5,6 +5,8 @@ env:
 
 on:
   push:
+    branches:
+      - main
 
 # The server and client jobs are pretty much the same as their individual workflows. Hopefully github will support cross workflow checks so we can just have them
 jobs:
