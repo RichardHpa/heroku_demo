@@ -5,8 +5,6 @@ env:
 
 on:
   push:
-    branches:
-      - main
 
 # The server and client jobs are pretty much the same as their individual workflows. Hopefully github will support cross workflow checks so we can just have them
 jobs:
@@ -51,7 +49,12 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: 📥 Download deps
+      - name: 📥 Download deps for Server
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 📥 Download deps for Client
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false
