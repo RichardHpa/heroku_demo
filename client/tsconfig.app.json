@@ -20,7 +20,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["./node_modules/@types", "./node_modules/@testing-library"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules/@testing-library",
+      // Some of the packages are shared between the client and server so we need to include the server's type roots
+      "../node_modules/@types",
+      "../node_modules/@testing-library"
+    ],
     "types": ["jest-dom"]
   },
   "include": ["src"]

@@ -3,6 +3,16 @@ updates:
   - package-ecosystem: 'npm'
     directories:
       - '/'
+    schedule:
+      interval: 'weekly'
+      timezone: Pacific/Auckland
+    labels:
+      - dependencies
+      - bot-pr
+      - server
+
+  - package-ecosystem: 'npm'
+    directories:
       - '/client'
     schedule:
       interval: 'weekly'
@@ -10,3 +20,4 @@ updates:
     labels:
       - dependencies
       - bot-pr
+      - client

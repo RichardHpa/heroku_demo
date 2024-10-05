@@ -51,7 +51,12 @@ jobs:
         with:
           node-version: 18.x
 
-      - name: 📥 Download deps
+      - name: 📥 Download deps for Server
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 📥 Download deps for Client
         uses: bahmutov/npm-install@v1
         with:
           useLockFile: false

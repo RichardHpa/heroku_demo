@@ -3,6 +3,9 @@
   "type": "module",
   "version": "1.0.1",
   "main": "index.js",
+  "workspaces": [
+    "client"
+  ],
   "scripts": {
     "start": "node index.js -- --scheduler",
     "dev:server": "nodemon index.js",
