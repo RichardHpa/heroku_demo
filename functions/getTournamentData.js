@@ -20,6 +20,12 @@ export const getTournamentData = async tournamentId => {
     }
 
     const date = format(new Date(), 'Pp');
+
+    // hack for 0000132 as its not auto updating to running
+    if (tournamentId === '0000132') {
+      data.tournament.tournamentStatus = 'running';
+    }
+
     const newData = {
       dataLastUpdated: date,
       ...data,
