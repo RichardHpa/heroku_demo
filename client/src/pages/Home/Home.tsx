@@ -5,10 +5,16 @@ import { useGetTournaments } from 'queries/useGetTournaments';
 import { Heading } from 'components/Heading';
 
 export const Home = () => {
-  // write a block of code that should fail type checking to test npx tsc --noEmit
   const test = 'test';
   test = 1;
   console.log(test);
+
+  const test2 = 'test2';
+  test2 = 2;
+
+  const title = 'React';
+
+  console.log('Hello, Vite + React! 1');
 
   const { data, isLoading, isError } = useGetTournaments();
 
@@ -18,7 +24,7 @@ export const Home = () => {
 
   // Test this to see if it hits the error boundary
   if (isError) {
-    return <div>There was an error getting the data 8</div>;
+    return <div>There was an error getting the data 10</div>;
   }
 
   return (
