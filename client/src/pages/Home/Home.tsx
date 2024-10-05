@@ -5,17 +5,6 @@ import { useGetTournaments } from 'queries/useGetTournaments';
 import { Heading } from 'components/Heading';
 
 export const Home = () => {
-  const test = 'test';
-  test = 1;
-  console.log(test);
-
-  const test2 = 'test2';
-  test2 = 2;
-
-  const title = 'React';
-
-  console.log('Hello, Vite + React! 1');
-
   const { data, isLoading, isError } = useGetTournaments();
 
   if (isLoading || !data) {
