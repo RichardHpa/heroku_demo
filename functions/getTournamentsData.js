@@ -20,10 +20,10 @@ export const getTournamentsData = async () => {
     }
     const date = format(new Date(), 'Pp');
 
-    // hack for 0000132 as its not auto updating to running
+    // hack for 0000132 as its not auto updating to finished
     const tournament = data.tcg.data.find(tournament => tournament.id === '0000132');
     if (tournament) {
-      tournament.tournamentStatus = 'running';
+      tournament.tournamentStatus = 'finished';
     }
 
     const newData = {

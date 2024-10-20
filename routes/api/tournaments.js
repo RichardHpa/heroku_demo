@@ -40,4 +40,16 @@ router.get('/:tournamentId', async (req, res) => {
   }
 });
 
+// force a refresh of the data
+router.post('/:tournamentId', async (req, res) => {
+  const { tournamentId } = req.params;
+  console.log(`Force refresh for tournament ${tournamentId}`);
+  const tournament = await getTournamentData(tournamentId);
+  if (tournament) {
+    res.send(`Data for tournament ${tournamentId} updated`);
+  } else {
+    res.status(404).send(`Tournament ${tournamentId} not found`);
+  }
+});
+
 export default router;

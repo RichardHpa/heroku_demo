@@ -23,7 +23,7 @@ export const getTournamentData = async tournamentId => {
 
     // hack for 0000132 as its not auto updating to running
     if (tournamentId === '0000132') {
-      data.tournament.tournamentStatus = 'running';
+      data.tournament.tournamentStatus = 'finished';
     }
 
     const newData = {

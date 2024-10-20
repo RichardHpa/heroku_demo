@@ -124,6 +124,7 @@ const initialSetup = async () => {
   console.log('Initial Setup');
   await createFolder();
   const tournamentsData = await getTournamentsData();
+
   const runningTournamentsData = await checkRunningTournaments(tournamentsData);
   tournamentsToTrack = [...runningTournamentsData];
 
