@@ -40,6 +40,24 @@ router.get('/:tournamentId', async (req, res) => {
   }
 });
 
+router.get('/old/:tournamentId', async (req, res) => {
+  const { tournamentId } = req.params;
+  const file = `${tournamentsFolder}/old/${tournamentId}.json`;
+  console.log('Request for old tournament data');
+  if (fs.existsSync(file)) {
+    fs.readFile(file, 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+        res.status(404).send(`Tournament ${tournamentId} not found`);
+      } else {
+        res.send(JSON.parse(data));
+      }
+    });
+  } else {
+    res.status(404).send(`Tournament ${tournamentId} not found`);
+  }
+});
+
 // force a refresh of the data
 router.post('/:tournamentId', async (req, res) => {
   const { tournamentId } = req.params;

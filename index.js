@@ -32,7 +32,8 @@ app.get('/loaderio-1a60ca1b960f219ccae80375388be890.txt', (_req, res) => {
 
 app.use('/api/tournaments', tournamentsRoutes);
 
-const singleTournamentsScheduleTimer = '*/15 * * * *';
+// const singleTournamentsScheduleTimer = '*/15 * * * *';
+const singleTournamentsScheduleTimer = '*/5 * * * *';
 const singleTournamentSchedule = cron.schedule(
   singleTournamentsScheduleTimer,
   async () => {

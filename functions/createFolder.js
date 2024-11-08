@@ -7,4 +7,10 @@ export const createFolder = async () => {
   } else {
     console.log('Tournaments folder already exists');
   }
+
+  if (!fs.existsSync(`${tournamentsFolder}/old`)) {
+    fs.mkdirSync(`${tournamentsFolder}/old`, { recursive: true });
+  } else {
+    console.log('Old tournaments folder already exists');
+  }
 };
