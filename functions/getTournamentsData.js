@@ -31,6 +31,12 @@ export const getTournamentsData = async () => {
       tournament0000137.tournamentStatus = 'finished';
     }
 
+    // turn 0000138 to running
+    const tournament0000138 = data.tcg.data.find(tournament => tournament.id === '0000138');
+    if (tournament0000138) {
+      tournament0000138.tournamentStatus = 'running';
+    }
+
     const newData = {
       dataLastUpdated: date,
       ...data,
