@@ -26,6 +26,10 @@ export const getTournamentData = async tournamentId => {
       data.tournament.tournamentStatus = 'finished';
     }
 
+    if (tournamentId === '0000138') {
+      data.tournament.tournamentStatus = 'running';
+    }
+
     const newData = {
       dataLastUpdated: date,
       ...data,
