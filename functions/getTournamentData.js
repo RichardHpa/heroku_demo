@@ -50,8 +50,6 @@ export const getTournamentData = async tournamentId => {
           newDivision => newDivision.division === division.division
         );
 
-        console.log('newDivision', newDivision);
-
         if (division.data.length !== newDivision.data.length) {
           misMatchedData = true;
         }

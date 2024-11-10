@@ -4,7 +4,6 @@ import { Heading } from 'components/Heading';
 
 export const Tournament = () => {
   const { tournament } = useTournamentContext();
-  console.log(tournament);
   return (
     <div>
       <Heading level="4">{tournament.name}</Heading>
