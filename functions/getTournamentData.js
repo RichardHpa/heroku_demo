@@ -37,36 +37,37 @@ export const getTournamentData = async tournamentId => {
 
     // there has been an issue where tournament organizers have removed the tournament from their systems which then causes issues with our data
     // const file = fs.readFileSync(`${tournamentsFolder}/${tournamentId}.json`, 'utf8');
-    const doesFileExist = fs.existsSync(`${tournamentsFolder}/${tournamentId}.json`);
-    let misMatchedData = false;
-    if (doesFileExist) {
-      const file = fs.readFileSync(`${tournamentsFolder}/${tournamentId}.json`, 'utf8');
-      const oldData = JSON.parse(file);
-      const divisions = oldData.tournament_data;
-      divisions.forEach(division => {
-        if (misMatchedData) return;
+    // const doesFileExist = fs.existsSync(`${tournamentsFolder}/${tournamentId}.json`);
+    // let misMatchedData = false;
+    // if (doesFileExist) {
+    //   const file = fs.readFileSync(`${tournamentsFolder}/${tournamentId}.json`, 'utf8');
+    //   const oldData = JSON.parse(file);
+    //   const divisions = oldData.tournament_data;
+    //   divisions.forEach(division => {
+    //     if (misMatchedData) return;
 
-        const newDivision = newData.tournament_data.find(
-          newDivision => newDivision.division === division.division
-        );
+    //     const newDivision = newData.tournament_data.find(
+    //       newDivision => newDivision.division === division.division
+    //     );
 
-        if (division.data.length !== newDivision.data.length) {
-          misMatchedData = true;
-        }
-      });
+    //     console.log(newDivision.data);
+    //     if (division.data.length !== newDivision.data.length) {
+    //       misMatchedData = true;
+    //     }
+    //   });
 
-      if (misMatchedData) {
-        try {
-          fs.writeFileSync(
-            `${tournamentsFolder}/old/${tournamentId}.json`,
-            JSON.stringify(oldData, null, 4)
-          );
-          console.log(`Old data for ${tournamentId} updated at ${date} and file saved`);
-        } catch (err) {
-          console.error(err);
-        }
-      }
-    }
+    //   if (misMatchedData) {
+    //     try {
+    //       fs.writeFileSync(
+    //         `${tournamentsFolder}/old/${tournamentId}.json`,
+    //         JSON.stringify(oldData, null, 4)
+    //       );
+    //       console.log(`Old data for ${tournamentId} updated at ${date} and file saved`);
+    //     } catch (err) {
+    //       console.error(err);
+    //     }
+    //   }
+    // }
 
     try {
       fs.writeFileSync(
