@@ -2,6 +2,7 @@
 import fs from 'fs';
 import { format } from 'date-fns';
 
+import { forceFinishTournaments } from '../constants/forceFinishTournaments.js';
 import { basePokeDataApiFullTournamentUrl, tournamentsFolder } from '../constants/folders.js';
 
 export const getTournamentData = async tournamentId => {
@@ -21,13 +22,9 @@ export const getTournamentData = async tournamentId => {
 
     const date = format(new Date(), 'Pp');
 
-    // hack for 0000132, 0000137 as its not auto updating to running
-    if (tournamentId === '0000132' || tournamentId === '0000137') {
+    // // hack as some of the tournaments (mainly the ones in south america) are not auto updating from not-started to finished
+    if (forceFinishTournaments.includes(tournamentId)) {
       data.tournament.tournamentStatus = 'finished';
-    }
-
-    if (tournamentId === '0000138') {
-      data.tournament.tournamentStatus = 'running';
     }
 
     const newData = {

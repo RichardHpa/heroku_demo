@@ -3,6 +3,7 @@ import fs from 'fs';
 import { format } from 'date-fns';
 
 import { basePokeDataApiTournamentsUrl, baseFolder } from '../constants/folders.js';
+import { forceFinishTournaments } from '../constants/forceFinishTournaments.js';
 
 export const getTournamentsData = async () => {
   console.log('Request for tournaments data');
@@ -20,22 +21,30 @@ export const getTournamentsData = async () => {
     }
     const date = format(new Date(), 'Pp');
 
-    // hack for 0000132 as its not auto updating from not-started to finished
-    const tournament0000132 = data.tcg.data.find(tournament => tournament.id === '0000132');
-    if (tournament0000132) {
-      tournament0000132.tournamentStatus = 'finished';
-    }
-    // hack for 0000137 as its not auto updating from running to finished
-    const tournament0000137 = data.tcg.data.find(tournament => tournament.id === '0000137');
-    if (tournament0000137) {
-      tournament0000137.tournamentStatus = 'finished';
-    }
+    // hack as some of the tournaments (mainly the ones in south america) are not auto updating from not-started to finished
+    forceFinishTournaments.forEach(tournamentId => {
+      const tournament = data.tcg.data.find(tournament => tournament.id === tournamentId);
+      if (tournament) {
+        tournament.tournamentStatus = 'finished';
+      }
+    });
 
-    // turn 0000138 to running
-    const tournament0000138 = data.tcg.data.find(tournament => tournament.id === '0000138');
-    if (tournament0000138) {
-      tournament0000138.tournamentStatus = 'running';
-    }
+    // hack for 0000132 as its not auto updating from not-started to finished
+    // const tournament0000132 = data.tcg.data.find(tournament => tournament.id === '0000132');
+    // if (tournament0000132) {
+    //   tournament0000132.tournamentStatus = 'finished';
+    // }
+    // // hack for 0000137 as its not auto updating from running to finished
+    // const tournament0000137 = data.tcg.data.find(tournament => tournament.id === '0000137');
+    // if (tournament0000137) {
+    //   tournament0000137.tournamentStatus = 'finished';
+    // }
+
+    // // turn 0000138 to running
+    // const tournament0000138 = data.tcg.data.find(tournament => tournament.id === '0000138');
+    // if (tournament0000138) {
+    //   tournament0000138.tournamentStatus = 'running';
+    // }
 
     const newData = {
       dataLastUpdated: date,
