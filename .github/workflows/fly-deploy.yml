@@ -114,7 +114,7 @@ jobs:
           repoName: ${{ env.REPO_NAME }}
 
   deploy:
-    name: 'Deploy to Heroku'
+    name: 'Deploy to Fly'
     runs-on: ubuntu-latest
     concurrency: deploy-group
     needs: prepare
