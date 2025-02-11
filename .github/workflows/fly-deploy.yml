@@ -1,0 +1,127 @@
+name: 🚀 Fly Deploy
+
+env:
+  REPO_NAME:
+
+on:
+  push:
+    branches:
+      - main
+
+# The server and client jobs are pretty much the same as their individual workflows. Hopefully github will support cross workflow checks so we can just have them
+jobs:
+  server:
+    name: Check Server
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: ⚡ Run vitest for server
+        run: npm run test
+
+  client:
+    name: Check Client
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: ⬇️ Checkout repo
+        uses: actions/checkout@v3
+
+      - name: ⎔ Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: 📥 Download deps for Server
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 📥 Download deps for Client
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+          working-directory: client
+
+      - name: ⚡ Run vitest for client
+        run: npm run test
+
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      isNewerVersion: ${{ steps.compare.outputs.isNewerVersion }}
+      versionType: ${{ steps.compare.outputs.versionType }}
+      tag: ${{ steps.setTags.outputs.tag }}
+
+    needs: [server, client]
+    steps:
+      - name: Set ENV variables
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+
+      - name: 🛑 Cancel Previous Runs
+        uses: styfle/cancel-workflow-action@0.11.0
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: 📥 Download deps
+        uses: bahmutov/npm-install@v1
+        with:
+          useLockFile: false
+
+      - name: 'Get current Package Version'
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Set Tag
+        id: setTags
+        run: |
+          echo "::set-output name=tag::v${{ steps.package-version.outputs.current-version }}"
+
+      - name: Compare the two versions
+        uses: ./.github/actions/compare-versions
+        id: compare
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          currentVersion: ${{ steps.package-version.outputs.current-version  }}
+          repoName: ${{ env.REPO_NAME }}
+
+  deploy:
+    name: 'Deploy to Heroku'
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    needs: prepare
+    if: needs.prepare.outputs.isNewerVersion == 'true'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
