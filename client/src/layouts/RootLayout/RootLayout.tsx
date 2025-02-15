@@ -3,6 +3,7 @@ import { Outlet, ScrollRestoration, Link } from 'react-router-dom';
 import { Heading } from 'components/Heading';
 
 export const RootLayout = () => {
+  console.log('env', import.meta.env);
   return (
     <div className="container mx-auto flex flex-grow flex-col gap-4 px-4 py-12">
       <Link to="/" className="inline-flex">
